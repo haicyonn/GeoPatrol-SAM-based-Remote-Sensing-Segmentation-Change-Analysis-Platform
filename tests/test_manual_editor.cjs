@@ -1,0 +1,6 @@
+const {test}=require('node:test'),assert=require('node:assert/strict');
+const E=require('../backend-java/src/main/resources/static/manual-editor.js');
+test('original-pixel mapping respects a scaled image',()=>{assert.deepEqual(E.pixel({clientX:60,clientY:45},{left:10,top:20,width:100,height:50},[200,100]),[100,50]);});
+test('Enter-close stores independent polygons and undo is deterministic',()=>{const s=E.create([100,100]);s.add([1,1]);s.add([4,1]);assert.equal(s.close(),false);s.add([4,4]);assert.equal(s.close(),true);assert.equal(s.geometry().polygons.length,1);s.add([8,8]);s.undo();assert.equal(s.geometry().polygons.length,1);s.undo();assert.equal(s.geometry().polygons.length,0);});
+test('drafts copied from server cannot mutate the server record',()=>{const source={type:'multi_polygon',polygons:[[[1,1],[5,1],[5,5]]]};const s=E.create([100,100],source);s.clear();assert.equal(source.polygons.length,1);assert.deepEqual(s.geometry(),{type:'multi_polygon',polygons:[]});});
+test('rerender restores unfinished vertices and does not silently submit empty geometry',()=>{const s=E.create([100,100]);for(const p of [[1,1],[5,1],[5,5]])s.add(p);const restored=E.create([100,100],s.geometry(),s.active);assert.equal(restored.active.length,3);assert.equal(restored.close(),true);assert.equal(restored.geometry().polygons.length,1);});

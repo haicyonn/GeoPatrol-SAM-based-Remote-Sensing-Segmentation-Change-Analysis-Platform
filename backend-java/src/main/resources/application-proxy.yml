@@ -1,0 +1,10 @@
+# Enable only behind a same-host reverse proxy which overwrites these headers.
+server:
+  forward-headers-strategy: native
+  tomcat:
+    remoteip:
+      internal-proxies: '127\.0\.0\.1|0:0:0:0:0:0:0:1|::1'
+      remote-ip-header: x-forwarded-for
+      protocol-header: x-forwarded-proto
+      host-header: x-forwarded-host
+      port-header: x-forwarded-port

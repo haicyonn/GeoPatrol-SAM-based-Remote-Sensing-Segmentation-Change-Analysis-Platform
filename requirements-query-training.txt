@@ -1,0 +1,3 @@
+# Optional short QLoRA pilot. Serving does not import bitsandbytes in FP16 mode.
+# Tested with existing torch 2.6.0+cu124, transformers 4.56.1, peft 0.19.1.
+bitsandbytes==0.49.2

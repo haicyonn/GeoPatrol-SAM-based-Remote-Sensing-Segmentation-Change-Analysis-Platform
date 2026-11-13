@@ -1,0 +1,4 @@
+# Additional inference dependency; reuse the project's existing PyTorch environment.
+bitsandbytes==0.50.2
+pymysql>=1.1,<2
+bcrypt>=4,<6

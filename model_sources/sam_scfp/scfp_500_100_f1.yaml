@@ -1,0 +1,97 @@
+train_dataset:
+  dataset:
+    name: paired-image-folders
+    args:
+      root_path_1: H:\dataset\WHU-Building-Subset\train\Image
+      root_path_2: H:\dataset\WHU-Building-Subset\train\Mask
+      cache: none
+      split_key: train
+      split_file: H:\RSAM-Seg-save\scfp_whu500_100_f1_20261112_01\split_500_100.json
+  wrapper:
+    name: train
+    args:
+      inp_size: 1024
+      augment: true
+  batch_size: 1
+val_dataset:
+  dataset:
+    name: paired-image-folders
+    args:
+      root_path_1: H:\dataset\WHU-Building-Subset\val\Image
+      root_path_2: H:\dataset\WHU-Building-Subset\val\Mask
+      cache: none
+      split_key: val
+      split_file: H:\RSAM-Seg-save\scfp_whu500_100_f1_20261112_01\split_500_100.json
+  wrapper:
+    name: val
+    args:
+      inp_size: 1024
+      augment: false
+  batch_size: 1
+eval_type: building_metrics_native512
+sam_checkpoint: H:\RSAM-Seg-pretrained\sam_vit_l_0b3195.pth
+data_norm:
+  inp:
+    sub:
+    - 0.5
+    div:
+    - 0.5
+  gt:
+    sub:
+    - 0.5
+    div:
+    - 0.5
+  gt_rgb:
+    sub:
+    - 0.5
+    div:
+    - 0.5
+model:
+  name: sam
+  args:
+    inp_size: 1024
+    loss: iou
+    encoder_mode:
+      name: sam
+      img_size: 1024
+      mlp_ratio: 4
+      patch_size: 16
+      qkv_bias: true
+      use_rel_pos: true
+      window_size: 14
+      out_chans: 256
+      scale_factor: 32
+      input_type: fft
+      freq_nums: 0.25
+      prompt_type: highpass
+      prompt_embed_dim: 256
+      tuning_stage: 1234
+      handcrafted_tune: true
+      embedding_tune: true
+      adaptor: adaptor
+      embed_dim: 1024
+      depth: 24
+      num_heads: 16
+      global_attn_indexes:
+      - 5
+      - 11
+      - 17
+      - 23
+      prior_type: structure_conditioned
+optimizer:
+  name: adamw
+  args:
+    lr: 0.0002
+lr_min: 1.0e-07
+epoch_max: 15
+epoch_val: 1
+epoch_save: 1
+seed: 42
+schedule_epochs: 15
+variant: SCFP
+expected_prior_parameters: 36650
+auxiliary_prompt_weight: 0.05
+selection_metric: f1
+required_dataset_sizes:
+  train: 500
+  val: 100

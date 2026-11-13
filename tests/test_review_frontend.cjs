@@ -1,0 +1,50 @@
+const assert = require('node:assert/strict');
+const review = require('../web/review_planner.js');
+const fake = {answer:'ok',answerScope:'review_plan',reviewPlan:{taskId:'task1',version:1,regionId:'levir',sourceVersion:'v1',hardSatisfied:true,conditions:{count:2,exclude_reviewed:true,coverage:['holes'],filters:[]},coverage:{holes:1},issues:[]},evidenceSamples:[{sample_id:'A',facts_hash:'hash',changed_px:100,object_count:2,families:['holes'],checklist:['检查<边界>']} ]};
+
+(async()=>{
+  const calls=[], states=[{state:'running',stage:'查询候选'},{state:'completed',result:fake}];
+  const client=review.createClient(async(path,body)=>{calls.push(body);return states.shift();},{sleep:async()=>{}});
+  const p={sessionKey:'s1',region:{id:'levir'}};
+  const stages=[];
+  const result=await client.wait({reviewJob:true,jobId:'j1'},p,(text)=>stages.push(text));
+  assert.equal(result.reviewPlan.version,1);
+  assert.ok(stages.includes('查询候选'));
+  assert.equal(client.decorate(p).reviewTaskId,'task1');
+  assert.equal(client.decorate({sessionKey:'s2'}).reviewTaskId,undefined);
+  assert.equal(client.decorate(p).reviewPlanVersion,1);
+  client.remember({...fake,reviewPlan:{...fake.reviewPlan,version:2}},p);
+  assert.equal(client.decorate(p).reviewPlanVersion,2);
+  const html=review.render({...fake,evidenceSamples:[{...fake.evidenceSamples[0],sample_id:'<img src=x onerror=alert(1)>',checklist:['<script>bad()</script>']}]});
+  assert.ok(!html.includes('<img'));
+  assert.ok(!html.includes('<script>'));
+  assert.ok(html.includes('&lt;script&gt;'));
+  assert.ok(html.includes('保存已复核'));
+  assert.ok(html.includes('移出并补选'));
+  assert.notEqual(review.confirmBody(fake,fake.evidenceSamples[0],p,'人工已核对','r1').action,'remove');
+  assert.throws(()=>review.confirmBody(fake,fake.evidenceSamples[0],p,'','r1'),/结论/);
+  const failed=review.createClient(async()=>({state:'failed',error:'条件不合法'}),{sleep:async()=>{}});
+  await assert.rejects(()=>failed.wait({reviewJob:true,jobId:'j2'},p),/条件不合法/);
+  const cancelled=review.createClient(async()=>({state:'cancelled'}),{sleep:async()=>{}});
+  await assert.rejects(()=>cancelled.wait({reviewJob:true,jobId:'j3'},p),/取消/);
+  const evidence=require('../web/inspection_evidence.js');
+  assert.equal(evidence.guardAnswer(fake,{id:'WRONG'},()=> 'wrong'),fake.answer);
+  assert.equal(evidence.guardAnswer({answer:'指定清单第二张',answerScope:'review_reference'},{id:'WRONG'},()=> 'wrong'),'指定清单第二张');
+  const htmlSource=require('node:fs').readFileSync(require('node:path').join(__dirname,'../web/index.html'),'utf8');
+  const start=htmlSource.indexOf('async function callAgentApi('), end=htmlSource.indexOf('async function callJudgementApi(',start);
+  let posted;
+  const call=new Function('agentPayload','reviewPlannerClient','isSmallTalk','postApi','cleanPublicAnswer','publicEngine',
+    htmlSource.slice(start,end)+';return callAgentApi;')(
+      ()=>p,client,()=>false,async(path,body)=>{posted=body;return {reviewJob:true,jobId:'integration'};},x=>x,x=>x);
+  const originalWait=client.wait;
+  client.wait=async()=>fake;
+  assert.equal((await call('第三张移出',null,{id:'levir'})).answer,'ok');
+  assert.equal(posted.reviewTaskId,'task1');
+  assert.equal(posted.reviewPlanVersion,2);
+  client.wait=originalWait;
+  client.remember({answerScope:'knowledge',answer:'资料解释'},p);
+  assert.equal(client.decorate(p).reviewTaskId,'task1');
+  client.remember({answerScope:'data_query',sqlRows:[{sample_id:'NEW'}]},p);
+  assert.equal(client.decorate(p).reviewTaskId,undefined,'Fresh data results must release stale review ordinal context');
+  console.log('Review polling, version/session binding, safe rendering, distinct confirmation and legacy guard tests passed.');
+})().catch(e=>{console.error(e);process.exitCode=1;});

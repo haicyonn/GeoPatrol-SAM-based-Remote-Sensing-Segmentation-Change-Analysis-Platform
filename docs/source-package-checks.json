@@ -1,0 +1,11 @@
+{
+  "python_syntax_files": 173,
+  "production_local_module_closure": "passed",
+  "embedded_sample_archive": "absent",
+  "database_or_model_binaries": "absent",
+  "secret_pattern_scan": "passed",
+  "original_project_modified": false,
+  "full_deployment_tested": false,
+  "javascript_syntax_files": 30,
+  "legacy_default_password": "removed"
+}

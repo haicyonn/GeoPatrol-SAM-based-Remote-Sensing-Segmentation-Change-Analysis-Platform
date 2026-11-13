@@ -1,0 +1,25 @@
+const assert=require('node:assert/strict');
+const app=require('../web/model_sql.js');
+const html=app.render({status:'completed',population:{kind:'displayed_samples',sample_count:1,origin_question:'one'},sqlColumns:['sample_id'],sqlRows:[{sample_id:'A'}]});
+assert.ok(html.includes('data-open-review'),'Successful query must enter imagery review');
+assert.ok(html.includes('data-export-evidence'),'Actual result must be exportable');
+const review=require('../web/query_review.js');
+const data={reviewPlan:{taskId:'t',version:1},evidenceSamples:[{sample_id:'A<script>',region_id:'levir',changed_px:10,object_count:2,
+  facts_hash:'h',assets:{pre:'assets/a.png',post:'https://evil/x',overlay:'../private.png'},checklist:['核对 <b>']}],reviewConfirmedIds:[]};
+const card=review.render(data,0);
+assert.ok(card.includes('assets/a.png'));
+assert.ok(!card.includes('https://evil'));
+assert.ok(!card.includes('../private'));
+assert.ok(!card.includes('<script>'));
+assert.ok(card.includes('人工核对结论'));
+const mismatch=review.render({...data,evidenceSamples:[{...data.evidenceSamples[0],assetEvidence:{status:'mismatch',expectedPixels:10,actualPixels:5,message:'图像与统计不一致'}}]});
+assert.ok(mismatch.includes('图像与统计不一致'));
+assert.ok(mismatch.includes('来源不一致，暂不可保存'));
+assert.equal(review.safeAsset('assets/%2e%2e/secret.png'),'');
+assert.equal(review.safeAsset('assets/a.png'),'assets/a.png');
+assert.equal(review.safeAsset('//evil/x.png'),'');
+const evidence=review.evidencePackage({modelId:'m',sqlQuery:'SELECT * FROM samples',dataVersion:'v',sqlRows:[{n:1}]},data);
+assert.equal(evidence.query.sqlQuery,'SELECT * FROM samples');
+assert.equal(evidence.query.dataVersion,'v');
+assert.equal(evidence.review.reviewPlan.taskId,'t');
+console.log('Query-to-imagery rendering, escaping, asset limits and evidence export passed.');

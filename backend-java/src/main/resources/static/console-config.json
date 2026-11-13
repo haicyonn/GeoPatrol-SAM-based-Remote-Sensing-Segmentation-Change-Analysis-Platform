@@ -1,0 +1,95 @@
+{
+  "title": "遥感变化智能巡检平台",
+  "subtitle": "变化检测事实层 · 结构化判读 · 复核闭环",
+  "hero": {
+    "headline": "变化检测可信判读智能体",
+    "subline": "接入 LEVIR、WHU、CLCD、GZ-CD 与 UAV 五类巡检区域"
+  },
+  "classes": {
+    "small_building_facility_change": {
+      "zh": "小区域建筑/设施变化",
+      "short": "小区域建筑",
+      "tone": "local",
+      "summary": "变化集中在少量对象或小范围设施，适合做对象级判读和报告。"
+    },
+    "large_building_hardening_change": {
+      "zh": "大区域建筑/硬化变化",
+      "short": "大区域硬化",
+      "tone": "regional",
+      "summary": "变化范围较连续或多目标聚集，通常对应建设扩张、成片硬化或设施成片变化。"
+    },
+    "land_cover_change": {
+      "zh": "地表覆盖变化",
+      "short": "地表覆盖",
+      "tone": "complex",
+      "summary": "面向耕地、裸地、植被、水体或一般地表覆盖变化，语义需要结合图像谨慎判读。"
+    },
+    "road_linear_change_candidate": {
+      "zh": "道路/线性变化候选",
+      "short": "道路候选",
+      "tone": "road",
+      "summary": "只作为道路或线性硬化变化候选展示，默认需要复核或用户追问后展开。"
+    },
+    "low_altitude_construction_facility_candidate": {
+      "zh": "低空施工/设施变化候选",
+      "short": "低空设施",
+      "tone": "uav",
+      "summary": "面向 UAV 低空影像中的施工地表、屋顶、棚体、临时设施等变化候选。"
+    },
+    "no_primary_event": {
+      "zh": "微弱/无明显变化",
+      "short": "弱/无变化",
+      "tone": "quiet",
+      "summary": "未形成稳定主事件，作为弱变化或无明显变化状态保留，支持筛选和抽检。",
+      "hidden": false
+    }
+  },
+  "classOrder": [
+    "small_building_facility_change",
+    "large_building_hardening_change",
+    "land_cover_change",
+    "road_linear_change_candidate",
+    "low_altitude_construction_facility_candidate",
+    "no_primary_event"
+  ],
+  "morphologyClasses": {
+    "small_building_facility_change": {
+      "zh": "小区域建筑/设施变化",
+      "short": "小区域建筑",
+      "tone": "local",
+      "summary": "变化集中在少量对象或小范围设施，适合做对象级判读和报告。"
+    },
+    "large_building_hardening_change": {
+      "zh": "大区域建筑/硬化变化",
+      "short": "大区域硬化",
+      "tone": "regional",
+      "summary": "变化范围较连续或多目标聚集，通常对应建设扩张、成片硬化或设施成片变化。"
+    },
+    "land_cover_change": {
+      "zh": "地表覆盖变化",
+      "short": "地表覆盖",
+      "tone": "complex",
+      "summary": "面向耕地、裸地、植被、水体或一般地表覆盖变化，语义需要结合图像谨慎判读。"
+    },
+    "road_linear_change_candidate": {
+      "zh": "道路/线性变化候选",
+      "short": "道路候选",
+      "tone": "road",
+      "summary": "只作为道路或线性硬化变化候选展示，默认需要复核或用户追问后展开。"
+    },
+    "low_altitude_construction_facility_candidate": {
+      "zh": "低空施工/设施变化候选",
+      "short": "低空设施",
+      "tone": "uav",
+      "summary": "面向 UAV 低空影像中的施工地表、屋顶、棚体、临时设施等变化候选。"
+    },
+    "no_primary_event": {
+      "zh": "微弱/无明显变化",
+      "short": "弱/无变化",
+      "tone": "quiet",
+      "summary": "未形成稳定主事件，作为弱变化或无明显变化状态保留，支持筛选和抽检。",
+      "hidden": false
+    }
+  },
+  "eventSchemaVersion": "v2_fast_display_limit"
+}

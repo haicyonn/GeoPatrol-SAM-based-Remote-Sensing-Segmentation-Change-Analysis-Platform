@@ -1,0 +1,9 @@
+# Optional local Agent and retrieval runtime; preserve the original stdlib mode.
+langgraph==1.2.17
+langgraph-checkpoint-sqlite==3.1.2
+fastembed==0.9.1
+httpx[socks]>=0.28,<1
+pypdf==6.9.2
+python-docx==1.2.0
+sqlglot==28.10.1
+Pillow>=11.3,<13

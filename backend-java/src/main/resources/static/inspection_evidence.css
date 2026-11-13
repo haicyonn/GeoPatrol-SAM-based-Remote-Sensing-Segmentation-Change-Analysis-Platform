@@ -1,0 +1,8 @@
+.evidence-citations{margin-top:12px;display:grid;gap:6px;white-space:normal}
+.evidence-source,.evidence-trace{border:1px solid rgba(118,164,184,.3);border-radius:8px;padding:8px 10px;font-size:12px;line-height:1.6;white-space:normal}
+.evidence-source summary,.evidence-trace summary{cursor:pointer;color:#62c5ba;overflow-wrap:anywhere}
+.evidence-source p{margin:8px 0;white-space:pre-wrap;overflow-wrap:anywhere}
+.evidence-source small{opacity:.7;overflow-wrap:anywhere}
+.evidence-trace{margin-top:8px;opacity:.85}
+.evidence-trace ol{padding-left:20px;margin:8px 0}
+.report-summary-box{white-space:pre-wrap}

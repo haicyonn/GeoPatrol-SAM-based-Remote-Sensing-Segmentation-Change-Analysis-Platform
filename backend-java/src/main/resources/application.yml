@@ -1,0 +1,54 @@
+server:
+  address: ${XB_BIND_ADDRESS:127.0.0.1}
+  port: ${XB_PORT:8786}
+  servlet:
+    session:
+      timeout: 8h
+      cookie:
+        http-only: true
+        same-site: strict
+        secure: ${XB_SECURE_COOKIE:false}
+  tomcat:
+    max-part-count: 403
+    max-swallow-size: 300MB
+spring:
+  application:
+    name: xunbian-backend
+  datasource:
+    url: ${XB_DB_URL}
+    username: ${XB_DB_USER}
+    password: ${XB_DB_PASSWORD}
+    driver-class-name: org.mariadb.jdbc.Driver
+    hikari:
+      maximum-pool-size: 6
+  sql:
+    init:
+      mode: always
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 300MB
+  threads:
+    virtual:
+      enabled: true
+xunbian:
+  archive-file: ${XB_ARCHIVE_FILE:}
+  storage-root: ${XB_STORAGE_ROOT}
+  python-url: ${XB_PYTHON_URL:http://127.0.0.1:8787}
+  internal-token: ${XB_INTERNAL_TOKEN}
+  execution-enabled: ${XB_EXECUTION_ENABLED:true}
+  lease-seconds: ${XB_LEASE_SECONDS:60}
+  prediction-timeout-seconds: ${XB_PREDICTION_TIMEOUT_SECONDS:180}
+  max-pending-per-user: ${XB_MAX_PENDING_PER_USER:1000}
+  max-questions: ${XB_MAX_QUESTIONS:2}
+  question-queue-seconds: ${XB_QUESTION_QUEUE_SECONDS:30}
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,metrics
+logging:
+  level:
+    root: WARN
+    io.xunbian: INFO
+server.error.include-message: never
